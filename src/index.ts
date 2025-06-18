@@ -1,8 +1,14 @@
-import express from "express";
+import express, { response } from "express";
 import foodsRouter from "./routes/food.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import categoryRouter from "./routes/category.routes.js";
 import orderRouter from "./routes/order.routes.js";
+import mongoose from "mongoose";
+import { request } from "http";
+
+mongoose.connect(
+  "mongodb+srv://kherlenchimeg:db1234dv@cluster0.lukncma.mongodb.net/food-delivery"
+);
 
 const server = express();
 server.use(express.json());
