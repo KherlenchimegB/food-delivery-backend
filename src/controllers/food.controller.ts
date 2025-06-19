@@ -15,8 +15,8 @@ export const getAllFoods = async (request: Request, response: Response) => {
 
 export const getFoodByid = async (request: Request, response: Response) => {
   try {
-    const { id } = request.params;
-    const foodsById = await Food.findById(id);
+    const { foodId } = request.params;
+    const foodsById = await Food.findById(foodId);
     response.json({ success: true, data: foodsById });
   } catch (error) {
     response.status(444).json({
@@ -48,29 +48,32 @@ export const createFood = async (request: Request, response: Response) => {
 
 export const updateFood = async (request: Request, response: Response) => {
   try {
-    const { foodName, price, image, ingredients } = request.body;
-    const { id } = request.params;
-    const createdFood = await Food.findByIdAndUpdate(
-      {
-        foodName: foodName,
-        price: price,
-        image: image,
-        ingredients: ingredients,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      id
-    );
-    response.json({ success: true, data: createdFood });
+    const updatedFood = request.body;
+    const { foodId } = request.params;
+    const food = await Food.findByIdAndUpdate(foodId, updatedFood, {
+      new: true,
+    });
+
+    response.json({ success: true, data: food });
   } catch (error) {
     response.status(444).json({
       success: false,
       error: error,
     });
   }
-  // response.send("food/:foodId Patch huselt irlee");
 };
 
-export const deleteFood = (request: Request, response: Response) => {
-  response.send("food/:foodId Delete huselt irlee");
+export const deleteFood = async (request: Request, response: Response) => {
+  try {
+    const deletedFood = request.body;
+    const { foodId } = request.params;
+    const food = await Food.findByIdAndDelete(foodId, deletedFood);
+
+    response.json({ success: true, data: food });
+  } catch (error) {
+    response.status(444).json({
+      success: false,
+      error: error,
+    });
+  }
 };
