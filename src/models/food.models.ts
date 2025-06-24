@@ -14,4 +14,4 @@ const food = new Schema(
   { timestamps: true }
 );
 
-export const Food = model("food", food);
+export const Food = model("Food", food);

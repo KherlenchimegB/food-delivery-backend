@@ -1,29 +1,28 @@
-import mongoose, { isObjectIdOrHexString } from "mongoose";
+import mongoose from "mongoose";
 
-const { Schema, model } = mongoose;
+const { Schema, model, Types } = mongoose;
 
-const FoodOrderItem = new Schema({
-  foodName: String,
-  price: Number,
-  countFood: Number,
-  foodId: String,
-  order_date: Date,
-});
+// const foodOrderItem = new Schema({
+//   food: { type: Types.ObjectId, ref: "Food" },
+//   quantity: Number,
+// });
 
-const FoodOrderStatusEnum = new Schema({
+const order = new Schema({
+  user: { type: Types.ObjectId, ref: "User" },
+  totalPrice: Number,
+  foodOrderItems: [
+    {
+      food: { type: Types.ObjectId, ref: "Food" },
+      quantity: Number,
+    },
+  ],
   status: {
     type: String,
     enum: ["PENDING", "CANCELED", "DELIVERED"],
+    default: "PENDING",
   },
-});
-
-const order = new Schema({
-  totalPrice: Number,
-  image: String,
-  foodOrderItems: [FoodOrderItem],
-  status: FoodOrderStatusEnum,
   createdAt: Date,
   updatedAt: Date,
 });
 
-export const Order = model("order", order);
+export const Order = model("Order", order);

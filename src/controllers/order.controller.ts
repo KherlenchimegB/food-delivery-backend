@@ -3,7 +3,9 @@ import { Order } from "../models/order.models.js";
 
 export const getAllOrder = async (request: Request, response: Response) => {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find()
+      .populate("user")
+      .populate("foodOrderItems.food");
     response.json({ success: true, data: orders });
   } catch (error) {
     response.status(444).json({

@@ -1,23 +1,20 @@
 import mongoose from "mongoose";
 
-const { Schema, model } = mongoose;
+const { Schema, model, Types } = mongoose;
 
-const UserRoleEnum = new Schema({
+const user = new Schema({
+  email: { type: String, requered: true },
+  password: { type: String, requered: true },
+  phoneNumber: { type: String, requered: true },
+  address: String,
   role: {
     type: String,
     enum: ["User", "Admin"],
+    default: "User",
   },
-});
-
-const user = new Schema({
-  email: String,
-  password: String,
-  phoneNumber: String,
-  address: String,
-  role: UserRoleEnum,
   isVerified: Boolean,
   createdAt: Date,
   updatedAt: Date,
 });
 
-export const User = model("user", user);
+export const User = model("User", user);
