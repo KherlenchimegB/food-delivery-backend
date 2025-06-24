@@ -16,13 +16,9 @@ server.use(express.json());
 const port = 3000;
 
 server.use("/food", foodsRouter);
-server.use("/auth", userRouter);
+server.use("/user", userRouter);
 server.use("/food-category", categoryRouter);
 server.use("/food-order", orderRouter);
-
-// server.get("/", (_request, response) => {
-//   response.send("Hello Dashka");
-// });
 
 server.listen(port, () => {
   console.log("Server aslaa");
