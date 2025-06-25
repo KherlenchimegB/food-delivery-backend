@@ -13,7 +13,7 @@ const user = new Schema(
       enum: ["User", "Admin"],
       default: "User",
     },
-    isVerified: Boolean,
+    isVerified: {type: Boolean, default: false}
   },
   { timestamps: true }
 );
