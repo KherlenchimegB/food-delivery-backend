@@ -20,23 +20,24 @@ export const signIn = async (request: Request, response: Response) => {
     const { email, password } = request.body;
     const user = await User.findOne({ email });
 
-    const comparedPassword = bcrypt.compare(password, user?.password || "");
+    const comparedPassword = await bcrypt.compare(password, user?.password || "");
 
     const token = jwt.sign({ userId: user?._id || "" }, "pinecone-test", {
-      expiresIn: "1h",
-    });
+      expiresIn: "1h",});
+
+    console.log("comparedPassword",comparedPassword);
 
     if (!comparedPassword) {
       response.status(200).json({
-        success: true,
+        success: false,
         message: "not authenticated",
       });
-    }
+    } else {
     response.status(200).json({
-      success: false,
+      success: true,
       message: "Authenticated",
       token: token,
-    });
+    });}
   } catch (error) {
     response.status(444).json({
       success: false,
@@ -82,66 +83,57 @@ export const verifyResetPasswordRequest = async (
     const { email, password } = request.body;
     const user = await User.findOne({ email });
 
-    const validPassword = bcrypt.compare(password, user?.password);
+    const validPassword = await bcrypt.compare(password, user?.password || "");
 
-    if (validPassword) {
-      response.status(200).json({
-        success: true,
-        message: "Authenticated",
-        isVerified: true,
-      });
-    }
-    response.status(200).json({
-      success: false,
-      message: "not authenticated",
-      isVerified: false,
+     const token = jwt.sign({ userId: user?._id || "" }, "pinecone-test", {
+      expiresIn: "1h",
     });
+
+    if (!validPassword) {
+        response.status(200).json({
+        success: false,
+        message: "Not authenticated",
+        isVerified: false,
+      });
+    } else {
+      response.status(200).json({
+      success: true,
+      message: "Authenticated",
+      token: token,
+      isVerified: true,
+    });}
   } catch (error) {
     response.status(444).json({
       success: false,
       error: error,
     });
   }
-
-  response.send("auth/ verifyResetPasswordRrequest huselt irlee");
 };
+
 export const resetPassword = async (request: Request, response: Response) => {
   try {
-    const { email, password, newPassword } = request.body;
+  const { email, password } = request.body;
     const user = await User.findOne({ email });
-    const saltRounds = 10;
-    const salt = await bcrypt.genSalt(saltRounds);
 
-    bcrypt.compare(password, user?.password, (err, result) => {
-      if (result) {
-        bcrypt.hash(newPassword, salt, async (err, hash) => {
-          const { userId } = request.params;
-          const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            newPassword,
-            {
-              new: true,
-            }
-          );
-          response.json({ success: true, data: updatedUser });
+    const comparedPassword = await bcrypt.compare(password, user?.password || "");
 
-          response.status(200).json({
-            success: true,
-            data: updatedUser,
-          });
-        });
+    const token = jwt.sign({ userId: user?._id || "" }, "pinecone-test", {
+      expiresIn: "1h",});
 
-        response.status(200).json({
-          success: true,
-          message: "Authenticated",
-        });
-      } else {
-        response.status(200).json({
-          success: false,
-          message: "not authenticated",
-        });
-      }
-    });
+    console.log("comparedPassword",comparedPassword);
+
+    if (!comparedPassword) {
+      response.status(200).json({
+        success: false,
+        message: "not authenticated",
+      });
+    } else {
+    response.status(200).json({
+      success: true,
+      message: "Authenticated",
+      token: token,
+    });}
+
   } catch (error) {
     response.status(444).json({
       success: false,
